@@ -2,15 +2,18 @@
   "name": "iron-stats",
   "version": "1.0.0",
   "description": "IronStats - 健身训练记录与进度统计 Plugin for OpenClaw",
-  "main": "index.ts",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "prepublish": "npm run build"
   },
   "keywords": ["openclaw", "openclaw-plugin", "fitness", "workout", "stats"],
   "license": "MIT",
-  "dependencies": {},
+  "peerDependencies": {
+    "openclaw": ">=2026.0.0"
+  },
   "devDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
   }
 }
