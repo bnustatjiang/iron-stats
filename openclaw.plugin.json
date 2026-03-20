@@ -1,0 +1,33 @@
+{
+  "id": "iron-stats",
+  "name": "IronStats",
+  "description": "健身训练记录与进度统计工具，支持自然语言记录训练、查看进步曲线、生成报告。",
+  "version": "1.0.0",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "dataDir": {
+        "type": "string",
+        "description": "训练数据存放目录"
+      },
+      "units": {
+        "type": "string",
+        "enum": ["kg", "lb"],
+        "default": "kg",
+        "description": "重量单位"
+      }
+    }
+  },
+  "uiHints": {
+    "dataDir": {
+      "label": "数据目录",
+      "placeholder": "~/.iron-stats"
+    },
+    "units": {
+      "label": "重量单位",
+      "placeholder": "kg"
+    }
+  },
+  "skills": ["./skills"]
+}
