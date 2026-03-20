@@ -4,6 +4,7 @@ import type { PluginApi } from "openclaw";
 import { recordWorkout } from "./tools/record";
 import { queryStats } from "./tools/query";
 import { generateReport } from "./tools/report";
+import { deleteRecord, listRecords } from "./tools/delete";
 
 export default function register(api: PluginApi) {
   const cfg = api.config?.plugins?.entries?.["iron-stats"]?.config ?? {};
@@ -129,6 +130,38 @@ export default function register(api: PluginApi) {
       const period = (ctx.args ?? "month").trim() as "week" | "month" | "all";
       const filePath = await generateReport(dataDir, period);
       return { text: `📊 报告已生成：${filePath}` };
+    },
+  });
+
+  // /del <记录ID> — 删除指定ID的记录
+  api.registerCommand({
+    name: "del",
+    acceptsArgs: true,
+    handler: async (ctx) => {
+      const id = (ctx.args ?? "").trim();
+      if (!id) {
+        return { text: "❌ 请指定要删除的记录ID，例：/del 1742438400000-abc12" };
+      }
+      const result = await deleteRecord(dataDir, id);
+      return { text: result.message };
+    },
+  });
+
+  // /records — 列出最近N条记录（含ID，供删除用）
+  api.registerCommand({
+    name: "records",
+    acceptsArgs: true,
+    handler: async (ctx) => {
+      const limit = parseInt((ctx.args ?? "10").trim()) || 10;
+      const records = await listRecords(dataDir, limit);
+      if (records.length === 0) {
+        return { text: "暂无训练记录，快去 /log 一条吧！" };
+      }
+      const lines = records.map((r) => {
+        const d = new Date(r.date).toLocaleDateString("zh-CN");
+        return `[${r.id}] ${d} · ${r.exercise} ${r.weight}kg × ${r.sets}组×${r.reps}次`;
+      });
+      return { text: "📋 最近记录（复制方括号内的ID用于删除）：\n" + lines.join("\n") };
     },
   });
 
